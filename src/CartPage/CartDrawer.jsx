@@ -1,6 +1,6 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { X } from "lucide-react";
 
 export default function CartDrawer({ isOpen, setIsOpen }) {
   const [cartItems, setCartItems] = useState([
@@ -10,21 +10,21 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
       price: 79,
       qty: 1,
       oldPrice: 99,
-      img:  "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/1.jpg",
+      img: "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/1.jpg",
     },
     {
       id: 2,
       name: "Plastic Toothbrush Cover",
       price: 9,
       qty: 1,
-      img:  "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/1.jpg",
+      img: "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/1.jpg",
     },
     {
       id: 3,
       name: "Mini Fan",
       price: 199,
       qty: 1,
-      img:  "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/1.jpg",
+      img: "https://tiny-tarsier-3c15cf.netlify.app/assets/images/products/1.jpg",
     },
   ]);
 
@@ -48,12 +48,8 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  // ✅ Fallback image URL
-  const getImageUrl = (url) => {
-    return url && url.trim() !== ""
-      ? url
-      : "https://via.placeholder.com/80?text=No+Image";
-  };
+  const getImageUrl = (url) =>
+    url && url.trim() !== "" ? url : "https://via.placeholder.com/80?text=No+Image";
 
   return (
     <AnimatePresence>
@@ -79,7 +75,7 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
             {/* Header */}
             <div className="flex justify-between items-center border-b px-5 py-3">
               <h2 className="text-lg font-bold">Shopping cart</h2>
-              <button className="" onClick={() => setIsOpen(false)}>
+              <button onClick={() => setIsOpen(false)}>
                 <X className="w-6 h-6" />
               </button>
             </div>
@@ -88,11 +84,13 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
             <div className="px-5 py-3 text-sm border-b mb-4">
               {amountToCOD > 0 ? (
                 <p className="text-gray-700">
-                  Spend <span className="font-semibold">₹{amountToCOD}</span> more to get Cash on Delivery (COD)
+                  Spend <span className="font-semibold">₹{amountToCOD}</span> more to get Cash on
+                  Delivery (COD)
                 </p>
               ) : amountToFree > 0 ? (
                 <p className="text-gray-700">
-                  Spend <span className="font-semibold">₹{amountToFree}</span> more to get Free Shipping
+                  Spend <span className="font-semibold">₹{amountToFree}</span> more to get Free
+                  Shipping
                 </p>
               ) : (
                 <p className="text-green-600 font-medium">You unlocked Free Shipping 🎉</p>
@@ -106,8 +104,6 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                     style={{ width: `${progress}%` }}
                   />
                 </div>
-
-                {/* Labels under bar */}
                 <div className="flex justify-between text-xs mt-1 text-gray-500">
                   <span>₹{codThreshold}</span>
                   <span>₹{freeShippingThreshold}</span>
@@ -123,7 +119,9 @@ export default function CartDrawer({ isOpen, setIsOpen }) {
                     src={getImageUrl(item.img)}
                     alt={item.name}
                     className="w-16 h-16 object-cover rounded"
-                    onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/80?text=No+Image")}
+                    onError={(e) =>
+                      (e.currentTarget.src = "https://via.placeholder.com/80?text=No+Image")
+                    }
                   />
                   <div className="flex-1">
                     <h3 className="font-medium text-sm">{item.name}</h3>
