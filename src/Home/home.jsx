@@ -368,7 +368,6 @@ const Home = () => {
     <>
       {/* Header */}
       <Header />
-
       {/* Image slider Section */}
       <div className="relative w-full h-auto md:h-120 mt-1 overflow-hidden border border-gray-200">
         {/* Slider container */}
