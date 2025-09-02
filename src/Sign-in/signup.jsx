@@ -25,58 +25,56 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
 
   const handleSignUp = async () => {
     const fieldErrors = {};
-  
+
     if (!firstName.trim()) fieldErrors.firstName = "First name is required";
     if (!lastName.trim()) fieldErrors.lastName = "Last name is required";
-  
+
     if (!email) {
       fieldErrors.email = "Email is required";
     } else if (!isValidEmail(email)) {
       fieldErrors.email = "Invalid email format";
     }
-  
+
     if (!mobile) {
       fieldErrors.mobile = "Mobile number is required";
     } else if (!isValidMobile(mobile)) {
       fieldErrors.mobile = "Enter a valid 10-digit number";
     }
-  
+
     if (!password) {
       fieldErrors.password = "Password is required";
     } else if (password.length < 6) {
       fieldErrors.password = "Password must be at least 6 characters";
     }
-  
+
     if (!confirmPassword) {
       fieldErrors.confirmPassword = "Confirm password is required";
     } else if (password !== confirmPassword) {
       fieldErrors.confirmPassword = "Passwords do not match";
     }
-  
+
     if (Object.keys(fieldErrors).length > 0) {
       setErrors(fieldErrors);
       return;
     }
-  
+
     setErrors({});
     try {
       setLoading(true);
       const response = await signup({
-        firstname:firstName,
-        lastname:lastName,
+        firstname: firstName,
+        lastname: lastName,
         email,
         mobile,
         password,
       }); // ✅ using API layer
-  
+
       alert("Account created ✅");
-      console.log("New User:", response.data);
-  
+
       // Close sign up modal and open sign in
       setShowSignUp(false);
       setShowSignIn(true);
     } catch (error) {
-      console.error("SignUp Error:", error);
       alert(error.response?.data?.message || "Sign Up failed ❌");
     } finally {
       setLoading(false);

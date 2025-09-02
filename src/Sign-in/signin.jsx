@@ -1,18 +1,30 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { FaEnvelope, FaLock } from "react-icons/fa";
-import { login, forgotPassword, verifyOtp } from "../apiroutes/authApi";
+import {
+  login,
+  verifyOtp,
+  VerifyEmail,
+  resetPassword,
+} from "../apiroutes/authApi";
 
 export default function SignIn({ setShowSignIn, setShowSignUp }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  // Forgot Password
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
   const [showOtpField, setShowOtpField] = useState(false);
   const [otp, setOtp] = useState("");
+
+  // New Password Modal
+  const [showNewPasswordModal, setShowNewPasswordModal] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -23,6 +35,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
 
   const isValidEmail = (value) => /\S+@\S+\.\S+/.test(value);
 
+  // ✅ Login
   const handleSignIn = async () => {
     const fieldErrors = {};
 
@@ -40,7 +53,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
 
     try {
       setLoading(true);
-      const response = await login({ email, password }); // ✅ API call
+      const response = await login({ email, password });
       alert("Login successful ✅");
       console.log("User Data:", response.data);
       setShowSignIn(false);
@@ -51,6 +64,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
     }
   };
 
+  // ✅ Forgot Password (Send OTP)
   const handleForgotPassword = async () => {
     if (!resetEmail) {
       alert("Please enter your email");
@@ -63,13 +77,9 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
 
     try {
       setResetLoading(true);
-      const response = await axios.post(
-        "https://e-commerce-backend-zrxv.onrender.com/auth/forgot-password",
-        { email: resetEmail }
-      );
-      alert(response.data?.message || "Password reset link sent ✅");
-
-      // ✅ Show OTP field after sending reset link
+      const response = await VerifyEmail({ email: resetEmail });
+      console.log(response);
+      alert("OTP sent to your email ✅");
       setShowOtpField(true);
     } catch (error) {
       alert(error.response?.data?.message || "Failed to send reset link ❌");
@@ -78,6 +88,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
     }
   };
 
+  // ✅ Verify OTP
   const handleVerifyOtp = async () => {
     if (!otp) {
       alert("Please enter the OTP");
@@ -85,21 +96,67 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
     }
 
     try {
-      const response = await axios.post(
-        "https://e-commerce-backend-zrxv.onrender.com/auth/verify-otp",
-        { email: resetEmail, otp }
-      );
-      alert(response.data?.message || "OTP verified ✅");
-      setShowForgotPassword(false);
+      const response = await verifyOtp({ otp: otp, email: resetEmail });
+      console.log(response);
+      alert("OTP verified ✅");
       setShowOtpField(false);
       setOtp("");
+
+      // ✅ Open New Password Modal
+      setShowNewPasswordModal(true);
     } catch (error) {
       alert(error.response?.data?.message || "Invalid OTP ❌");
     }
   };
 
+  // ✅ Reset Password
+  const handleResetPassword = async () => {
+    if (!resetEmail) {
+      alert("Email is required");
+      return;
+    }
+    if (!isValidEmail(resetEmail)) {
+      alert("Invalid email format");
+      return;
+    }
+    if (!newPassword || !confirmPassword) {
+      alert("Please fill all fields");
+      return;
+    }
+    if (newPassword.length < 6) {
+      alert("Password must be at least 6 characters");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      alert("Passwords do not match ❌");
+      return;
+    }
+
+    try {
+      setResetPasswordLoading(true);
+      const response = await resetPassword({
+        email: resetEmail,
+        newPassword: newPassword,
+      });
+      console.log(response);
+      alert("Password reset successful ✅");
+
+      // Close all modals
+      setShowForgotPassword(false);
+      setShowNewPasswordModal(false);
+      setNewPassword("");
+      setConfirmPassword("");
+      setResetEmail("");
+    } catch (error) {
+      alert(error.response?.data?.message || "Password reset failed ❌");
+    } finally {
+      setResetPasswordLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex justify-center items-center z-[999]">
+      {/* ---- SIGN IN MODAL ---- */}
       <div className="relative w-[850px] h-[500px] bg-white rounded-2xl shadow-2xl overflow-hidden flex">
         {/* Close Button */}
         <button
@@ -168,19 +225,6 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
             Forgot Password?
           </button>
 
-          {/* Terms */}
-          <p className="text-xs text-gray-500 mb-5">
-            By continuing, you agree to ShopEasy's{" "}
-            <a href="#" className="text-[#2874f0] hover:underline">
-              Terms of Use
-            </a>{" "}
-            and{" "}
-            <a href="#" className="text-[#2874f0] hover:underline">
-              Privacy Policy
-            </a>
-            .
-          </p>
-
           {/* Sign In Button */}
           <button
             onClick={handleSignIn}
@@ -208,7 +252,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
         </div>
       </div>
 
-      {/* Forgot Password Modal (No black background) */}
+      {/* ---- Forgot Password Modal ---- */}
       {showForgotPassword && (
         <div className="fixed inset-0 flex justify-center items-center z-[1000]">
           <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
@@ -221,7 +265,6 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
               onChange={(e) => setResetEmail(e.target.value)}
             />
 
-            {/* ✅ Show OTP Field after sending reset link */}
             {showOtpField && (
               <input
                 type="text"
@@ -237,6 +280,7 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
                 onClick={() => {
                   setShowForgotPassword(false);
                   setShowOtpField(false);
+                  setResetEmail("");
                   setOtp("");
                 }}
                 className="px-4 py-2 text-sm bg-gray-300 rounded hover:bg-gray-400"
@@ -262,6 +306,60 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
                   Verify OTP
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---- New Password Modal ---- */}
+      {showNewPasswordModal && (
+        <div className="fixed inset-0 flex justify-center items-center z-[1100]">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
+            <h3 className="text-lg font-bold mb-4">Set New Password</h3>
+
+            {/* Email Input */}
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4 outline-none focus:border-[#2874f0]"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+            />
+
+            {/* New Password */}
+            <input
+              type="password"
+              placeholder="Enter new password"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4 outline-none focus:border-[#2874f0]"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+
+            {/* Confirm Password */}
+            <input
+              type="password"
+              placeholder="Confirm new password"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4 outline-none focus:border-[#2874f0]"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setShowNewPasswordModal(false)}
+                className="px-4 py-2 text-sm bg-gray-300 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleResetPassword}
+                disabled={resetPasswordLoading}
+                className={`px-4 py-2 text-sm bg-[#2874f0] text-white rounded hover:bg-blue-600 ${
+                  resetPasswordLoading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
+              >
+                {resetPasswordLoading ? "Resetting..." : "Reset Password"}
+              </button>
             </div>
           </div>
         </div>
