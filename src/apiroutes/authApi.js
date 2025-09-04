@@ -8,3 +8,5 @@ export const verifyOtp = (data) =>
   axiosInstance.post("/password/verify-otp", data);
 export const resetPassword = (data) =>
   axiosInstance.post("/password/reset-password", data);
+export const GetSlides = () =>
+  axiosInstance.get("/slides/get");

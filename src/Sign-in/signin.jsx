@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaEnvelope, FaLock } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import {
   login,
   verifyOtp,
@@ -12,6 +12,11 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  // Password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Forgot Password
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -35,10 +40,8 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
 
   const isValidEmail = (value) => /\S+@\S+\.\S+/.test(value);
 
-  // ✅ Login
   const handleSignIn = async () => {
     const fieldErrors = {};
-
     if (!email) fieldErrors.email = "Email is required";
     else if (!isValidEmail(email)) fieldErrors.email = "Invalid email address";
 
@@ -64,7 +67,6 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
     }
   };
 
-  // ✅ Forgot Password (Send OTP)
   const handleForgotPassword = async () => {
     if (!resetEmail) {
       alert("Please enter your email");
@@ -88,7 +90,6 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
     }
   };
 
-  // ✅ Verify OTP
   const handleVerifyOtp = async () => {
     if (!otp) {
       alert("Please enter the OTP");
@@ -101,15 +102,12 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       alert("OTP verified ✅");
       setShowOtpField(false);
       setOtp("");
-
-      // ✅ Open New Password Modal
       setShowNewPasswordModal(true);
     } catch (error) {
       alert(error.response?.data?.message || "Invalid OTP ❌");
     }
   };
 
-  // ✅ Reset Password
   const handleResetPassword = async () => {
     if (!resetEmail) {
       alert("Email is required");
@@ -141,7 +139,6 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
       console.log(response);
       alert("Password reset successful ✅");
 
-      // Close all modals
       setShowForgotPassword(false);
       setShowNewPasswordModal(false);
       setNewPassword("");
@@ -204,12 +201,18 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
             <div className="flex items-center border-b border-gray-300 focus-within:border-[#2874f0]">
               <FaLock className="text-gray-400 text-sm mr-2" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Enter Password"
                 className="w-full outline-none text-sm py-2"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <span
+                className="text-gray-400 text-sm ml-2 cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
             {errors.password && (
               <p className="text-xs text-red-500 mt-1">{errors.password}</p>
@@ -317,7 +320,6 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
           <div className="bg-white p-6 rounded-lg shadow-lg w-[400px]">
             <h3 className="text-lg font-bold mb-4">Set New Password</h3>
 
-            {/* Email Input */}
             <input
               type="email"
               placeholder="Enter your email"
@@ -327,22 +329,38 @@ export default function SignIn({ setShowSignIn, setShowSignUp }) {
             />
 
             {/* New Password */}
-            <input
-              type="password"
-              placeholder="Enter new password"
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4 outline-none focus:border-[#2874f0]"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
+            <div className="flex items-center border-b border-gray-300 focus-within:border-[#2874f0] mb-4">
+              <input
+                type={showNewPassword ? "text" : "password"}
+                placeholder="Enter new password"
+                className="w-full outline-none text-sm py-2"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+              <span
+                className="text-gray-400 text-sm ml-2 cursor-pointer"
+                onClick={() => setShowNewPassword(!showNewPassword)}
+              >
+                {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
 
             {/* Confirm Password */}
-            <input
-              type="password"
-              placeholder="Confirm new password"
-              className="w-full border border-gray-300 rounded px-3 py-2 text-sm mb-4 outline-none focus:border-[#2874f0]"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
+            <div className="flex items-center border-b border-gray-300 focus-within:border-[#2874f0] mb-4">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm new password"
+                className="w-full outline-none text-sm py-2"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              <span
+                className="text-gray-400 text-sm ml-2 cursor-pointer"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
 
             <div className="flex justify-end space-x-2">
               <button

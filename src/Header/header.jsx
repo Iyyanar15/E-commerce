@@ -1,14 +1,9 @@
-import {
-  Search,
-  User,
-  Heart,
-  ShoppingCart,
-} from "lucide-react";
+import { Search, User, Heart, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import SignIn from "../Sign-in/signin";
 import SignUp from "../Sign-in/signup";
 import { Link } from "react-router-dom";
-import CartDrawer from "../CartPage/CartDrawer"; 
+import CartDrawer from "../CartPage/CartDrawer";
 
 export default function Header() {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -85,10 +80,17 @@ export default function Header() {
               <span className="hidden sm:inline">Login</span>
             </button>
 
-            <button className="flex items-center space-x-1 hover:text-yellow-500 text-sm cursor-pointer">
+            {/* <button className="flex items-center space-x-1 hover:text-yellow-500 text-sm cursor-pointer">
               <Heart size={18} />
               <span className="hidden sm:inline">Wishlist</span>
-            </button>
+            </button> */}
+            <Link
+              to="/wishlist"
+              className="flex items-center space-x-1 hover:text-yellow-500 text-sm cursor-pointer"
+            >
+              <Heart size={18} />
+              <span className="hidden sm:inline">Wishlist</span>
+            </Link>
 
             {/* Cart Button */}
             <button
@@ -106,9 +108,15 @@ export default function Header() {
       <div className="bg-yellow-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <nav className="flex overflow-x-auto md:overflow-visible items-center justify-start md:justify-center space-x-4 sm:space-x-6 py-3 sm:py-5 font-semibold font-sans text-gray-700 whitespace-nowrap scrollbar-hide">
-            <Link to="/" className="hover-link">Home</Link>
-            <Link to="/hot-deals" className="hover-link">Hot Deals</Link>
-            <Link to="/support" className="hover-link">Support</Link>
+            <Link to="/" className="hover-link">
+              Home
+            </Link>
+            <Link to="/hot-deals" className="hover-link">
+              Hot Deals
+            </Link>
+            <Link to="/support" className="hover-link">
+              Support
+            </Link>
           </nav>
         </div>
       </div>

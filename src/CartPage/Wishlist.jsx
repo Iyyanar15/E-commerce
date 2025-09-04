@@ -80,10 +80,7 @@ const Wishlist = () => {
       <div className="min-h-screen px-4 sm:px-6 lg:px-12 py-10">
         {/* Breadcrumb */}
         <div className="text-sm text-gray-600 mb-6">
-          <Link
-            to="/home"
-            className="font-semibold cursor-pointer hover:underline"
-          >
+          <Link to="/" className="font-semibold cursor-pointer hover:underline">
             Home
           </Link>{" "}
           &gt; <span className="font-semibold">Wishlist</span>

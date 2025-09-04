@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { FaEnvelope, FaLock, FaUser, FaPhone } from "react-icons/fa";
+import {
+  FaEnvelope,
+  FaLock,
+  FaUser,
+  FaPhone,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
 import { signup } from "../apiroutes/authApi";
 
 export default function SignUp({ setShowSignUp, setShowSignIn }) {
@@ -12,6 +18,10 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  // Password visibility states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -61,17 +71,16 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
     setErrors({});
     try {
       setLoading(true);
-      const response = await signup({
+      await signup({
         firstname: firstName,
         lastname: lastName,
         email,
         mobile,
         password,
-      }); // ✅ using API layer
+      });
 
       alert("Account created ✅");
 
-      // Close sign up modal and open sign in
       setShowSignUp(false);
       setShowSignIn(true);
     } catch (error) {
@@ -180,12 +189,18 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
             <div className="flex items-center border-b border-gray-300 focus-within:border-[#2874f0]">
               <FaLock className="text-gray-400 text-sm mr-2" />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Enter Password"
                 className="w-full outline-none text-sm py-2"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <span
+                className="text-gray-400 text-sm ml-2 cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
             {errors.password && (
               <p className="text-xs text-red-500 mt-1">{errors.password}</p>
@@ -197,12 +212,18 @@ export default function SignUp({ setShowSignUp, setShowSignIn }) {
             <div className="flex items-center border-b border-gray-300 focus-within:border-[#2874f0]">
               <FaLock className="text-gray-400 text-sm mr-2" />
               <input
-                type="password"
+                type={showConfirmPassword ? "text" : "password"}
                 placeholder="Confirm Password"
                 className="w-full outline-none text-sm py-2"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
+              <span
+                className="text-gray-400 text-sm ml-2 cursor-pointer"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
             </div>
             {errors.confirmPassword && (
               <p className="text-xs text-red-500 mt-1">
