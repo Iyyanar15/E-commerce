@@ -1,87 +1,93 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom"; // For internal routing
 
-const footer = () => {
+const Footer = () => {
   const [isVisible, setIsVisible] = useState(false);
+
+  // Footer sections with links as objects {name, url}
   const footerSections = [
     {
       title: "Customer Services",
       links: [
-        "Contact us",
-        "FAQs",
-        "Returns and refunds",
-        "Personal Shopping",
-        "Gift cards",
-        "Gift packaging",
+        { name: "Contact us", url: "/contact" },
+        { name: "FAQs", url: "/faqs" },
+        { name: "Returns and refunds", url: "/returns" },
+        { name: "Personal Shopping", url: "/personal-shopping" },
+        { name: "Gift cards", url: "/gift-cards" },
+        { name: "Gift packaging", url: "/gift-packaging" },
       ],
     },
     {
       title: "Online Shopping",
       links: [
-        "Delivery",
-        "Click & Collect",
-        "ShopEasy +",
-        "Tracking your order",
-        "Online Brand Directory",
+        { name: "Delivery", url: "/delivery" },
+        { name: "Click & Collect", url: "/click-collect" },
+        { name: "ShopEasy +", url: "/shopeasy-plus" },
+        { name: "Tracking your order", url: "/tracking" },
+        { name: "Online Brand Directory", url: "/brands" },
       ],
     },
     {
       title: "Our Stores",
       links: [
-        "London",
-        "Birmingham",
-        "Manchester Trafford",
-        "Manchester Exchange",
+        { name: "London", url: "/stores/london" },
+        { name: "Birmingham", url: "/stores/birmingham" },
+        { name: "Manchester Trafford", url: "/stores/manchester-trafford" },
+        { name: "Manchester Exchange", url: "/stores/manchester-exchange" },
       ],
     },
     {
       title: "In Store",
-      links: ["A-Z store services", "Restaurants", "Services", "Events"],
+      links: [
+        { name: "A-Z store services", url: "/store-services" },
+        { name: "Restaurants", url: "/restaurants" },
+        { name: "Services", url: "/services" },
+        { name: "Events", url: "/events" },
+      ],
     },
     {
       title: "About Us",
       links: [
-        "Inspiration",
-        "About ShopEasy",
-        "Careers",
-        "Suppliers",
-        "Press area",
-        "Our policies and statements",
+        { name: "Inspiration", url: "/inspiration" },
+        { name: "About ShopEasy", url: "/about" },
+        { name: "Careers", url: "/careers" },
+        { name: "Suppliers", url: "/suppliers" },
+        { name: "Press area", url: "/press" },
+        { name: "Our policies and statements", url: "/policies" },
       ],
     },
     {
       title: "Seasonal",
-      links: ["Sale", "Hampers", "Weddings"],
+      links: [
+        { name: "Sale", url: "/sale" },
+        { name: "Hampers", url: "/hampers" },
+        { name: "Weddings", url: "/weddings" },
+      ],
     },
   ];
 
+  // Bottom links with URLs
   const bottomLinks = [
-    "Modern slavery statement",
-    "Accessibility",
-    "Terms & conditions",
-    "Privacy & cookie policies",
+    { name: "Modern slavery statement", url: "/modern-slavery" },
+    { name: "Accessibility", url: "/accessibility" },
+    { name: "Terms & conditions", url: "/terms&conditions" },
+    { name: "Privacy & cookie policies", url: "/privacy" },
   ];
 
-  // Show button when user scrolls down
+  // Show scroll-to-top button when user scrolls down
   useEffect(() => {
     const toggleVisibility = () => {
-      if (window.scrollY > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
+      setIsVisible(window.scrollY > 300);
     };
-
     window.addEventListener("scroll", toggleVisibility);
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
-  // Smooth scroll function
+  // Smooth scroll to top
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth", // 👈 this is the key for smooth scroll
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
   return (
     <>
       <footer className="bg-gray-100 border-t border-gray-200">
@@ -96,12 +102,12 @@ const footer = () => {
                 <ul className="space-y-2">
                   {section.links.map((link, linkIndex) => (
                     <li key={linkIndex}>
-                      <a
-                        href="#"
+                      <Link
+                        to={link.url}
                         className="text-gray-700 text-sm hover:text-gray-900 transition-colors duration-200"
                       >
-                        {link}
-                      </a>
+                        {link.name}
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -114,27 +120,28 @@ const footer = () => {
         <div className="border-t border-gray-200 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-              {/* Copyright */}
-              <div className="text-gray-600 text-sm">
-                © ShopEasy
-              </div>
+              <div className="text-gray-600 text-sm">© ShopEasy</div>
 
-              {/* Bottom Links */}
               <div className="flex flex-wrap items-center space-x-6">
                 {bottomLinks.map((link, index) => (
-                  <a
+                  <Link
                     key={index}
-                    href="#"
+                    to={link.url}
                     className="text-gray-600 text-sm hover:text-gray-900 transition-colors duration-200"
+                    onClick={() =>
+                      window.scrollTo({ top: 0, behavior: "smooth" })
+                    }
                   >
-                    {link}
-                  </a>
+                    {link.name}
+                  </Link>
                 ))}
               </div>
             </div>
           </div>
         </div>
       </footer>
+
+      {/* Scroll to Top Button */}
       {isVisible && (
         <div className="fixed bottom-6 right-6 z-50 animate-bounce">
           <button
@@ -150,4 +157,4 @@ const footer = () => {
   );
 };
 
-export default footer;
+export default Footer;

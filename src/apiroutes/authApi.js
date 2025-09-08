@@ -10,3 +10,5 @@ export const resetPassword = (data) =>
   axiosInstance.post("/password/reset-password", data);
 export const GetSlides = () =>
   axiosInstance.get("/slides/get");
+export const ContactEmail = () =>
+  axiosInstance.get("/contact/email");

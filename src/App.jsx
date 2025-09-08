@@ -4,6 +4,7 @@ import Home from "./Home/home.jsx";
 import ProductPage from "./Product Page/ProductPage.jsx";
 import Product from "./Product/product.jsx";
 import Wishlist from "./CartPage/Wishlist.jsx";
+import Termsconditions from "./common/TermsAndConditions.jsx";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/ProductPage" element={<ProductPage />} />
           <Route path="/ProductPage/products" element={<Product />} />
           <Route path="/Wishlist" element={<Wishlist />} />
+          <Route path="/terms&conditions" element={<Termsconditions />} />
         </Routes>
       </Router>
     </>

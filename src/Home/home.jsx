@@ -48,7 +48,6 @@ const Home = () => {
   const [current, setCurrent] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [favorites, setFavorites] = useState(new Set());
-  const scrollRef = useRef(null);
   const images = [image1, image2];
   // Auto-rotate every 5 seconds
   useEffect(() => {
